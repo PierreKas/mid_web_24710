@@ -27,14 +27,14 @@ public class HibernateUtil {
             // Database connection settings
             settings.setProperty(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
             settings.setProperty(Environment.URL, "jdbc:mysql://localhost:3306/auca_library_db");
-            settings.setProperty(Environment.USER, "root");
-            settings.setProperty(Environment.PASS, "");
+            settings.setProperty(Environment.USER, "pierre");
+            settings.setProperty(Environment.PASS, "KASANANI");
             
             // Hibernate settings
             settings.setProperty(Environment.HBM2DDL_AUTO, "update");
             settings.setProperty(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
             settings.setProperty(Environment.SHOW_SQL, "true");
-            
+            settings.put(Environment.HBM2DDL_AUTO, "update");
             // Apply settings
             conf.setProperties(settings);
             

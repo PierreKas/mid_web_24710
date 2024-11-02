@@ -70,7 +70,7 @@ public class membership_type {
 
 	@Id
     @Column(name = "membership_type_id")
-    private UUID membership_type_id;
+    private UUID membership_type_id=UUID.randomUUID();
     
     @Column(name = "price")
     private Integer price;

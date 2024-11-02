@@ -21,7 +21,7 @@ public class Location {
     
     @Id
     @Column(name = "location_id")
-    private UUID location_id;
+    private UUID location_id=UUID.randomUUID();;
     
     @Column(name = "location_name")
     private String location_name;
@@ -36,7 +36,8 @@ public class Location {
     
     @OneToMany(mappedBy = "parent")
     private List<Location> children;
-    
+    public Location() {
+    }
     public Location(String location_code, UUID location_id, String location_name, Location_type type, Location parent,
 			List<Location> children, List<User> users) {
 		super();
@@ -105,6 +106,8 @@ public class Location {
 		this.users = users;
 	}
 
-	@OneToMany(mappedBy = "village_id")
-    private List<User> users;
+//	@OneToMany(mappedBy = "village_id")
+//    private List<User> users;
+	@OneToMany(mappedBy = "village")  // should match the field name in User class
+	private List<User> users;
 }

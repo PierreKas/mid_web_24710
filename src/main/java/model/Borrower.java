@@ -25,7 +25,7 @@ public class Borrower {
     
     @Id
     @Column(name = "id")
-    private UUID id;
+    private UUID id=UUID.randomUUID();
     
     @Column(name = "late_charge_fees")
     private Integer late_charge_fees;

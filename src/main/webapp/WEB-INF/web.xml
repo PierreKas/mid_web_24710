@@ -10,6 +10,8 @@
     <display-name>library_mgt_sy</display-name>
 
     
-    
+        <welcome-file-list>
+        <welcome-file>locationMngt.jsp</welcome-file>
+    </welcome-file-list>
 
 </web-app>

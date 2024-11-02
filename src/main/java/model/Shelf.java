@@ -1,37 +1,16 @@
 package model;
-
 import java.util.List;
 import java.util.UUID;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "shelf")
 public class Shelf {
-//    @Column(name = "available_stock")
-//    private Integer available_stock;
-//    
-//    @Column(name = "book_category")
-//    private String book_category;
-//    
-//    @Column(name = "borrowed_number")
-//    private Integer borrowed_number;
-//    
-//    @Column(name = "initial_stock")
-//    private Integer initial_stock;
-//    
-//    @ManyToOne
-//    @JoinColumn(name = "room_id")
-//    private Room room;
-//    
-//    @OneToMany(mappedBy = "shelf")
-//    private List<Book> books;
-	@Column(name = "available_stock")
+    @Id
+    @Column(name = "id")
+    private UUID id = UUID.randomUUID();
+    
+    @Column(name = "available_stock")
     private Integer available_stock;
     
     @Column(name = "book_category")
@@ -46,17 +25,37 @@ public class Shelf {
     @Column(name = "room_id")
     private UUID room_id;
     
-    public Shelf(Integer available_stock, String book_category, Integer borrowed_number, Integer initial_stock,
-			UUID room_id, Room room, List<Book> books) {
-		super();
-		this.available_stock = available_stock;
-		this.book_category = book_category;
-		this.borrowed_number = borrowed_number;
-		this.initial_stock = initial_stock;
-		this.room_id = room_id;
-		this.room = room;
-		this.books = books;
-	}
+    // ManyToOne relationship with Room
+    @ManyToOne
+    @JoinColumn(name = "room_id", insertable = false, updatable = false)
+    private Room room;
+    
+    // OneToMany relationship with Book
+    @OneToMany(mappedBy = "shelf")
+    private List<Book> books;
+
+    // Add id to constructor
+    public Shelf(UUID id, Integer available_stock, String book_category, Integer borrowed_number, Integer initial_stock,
+            UUID room_id, Room room, List<Book> books) {
+        super();
+        this.id = id;
+        this.available_stock = available_stock;
+        this.book_category = book_category;
+        this.borrowed_number = borrowed_number;
+        this.initial_stock = initial_stock;
+        this.room_id = room_id;
+        this.room = room;
+        this.books = books;
+    }
+
+    // Add getter and setter for id
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
 	public Integer getAvailable_stock() {
 		return available_stock;
@@ -114,12 +113,5 @@ public class Shelf {
 		this.books = books;
 	}
 
-	// ManyToOne relationship with Room
-    @ManyToOne
-    @JoinColumn(name = "room_id", insertable = false, updatable = false)
-    private Room room;
-    
-    // OneToMany relationship with Book (based on "has" relationship in diagram)
-    @OneToMany(mappedBy = "shelf")
-    private List<Book> books;
+   
 }

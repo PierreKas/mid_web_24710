@@ -86,10 +86,10 @@ public class User extends Person {
 		this.memberships = memberships;
 	}
 
-	@OneToMany(mappedBy = "reader_id")
+	@OneToMany(mappedBy = "reader")
     private List<Borrower> borrowings;
     
-    @OneToMany(mappedBy = "reader_id")
+    @OneToMany(mappedBy = "reader")
     private List<Membership> memberships;
 }
 

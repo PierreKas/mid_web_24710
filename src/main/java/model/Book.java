@@ -19,7 +19,7 @@ import javax.persistence.Table;
 public class Book {
     @Id
     @Column(name = "book_id")
-    private UUID book_id;
+    private UUID book_id=UUID.randomUUID();
     
     @Enumerated(EnumType.STRING)
     @Column(name = "Book_status")
@@ -130,6 +130,6 @@ public class Book {
 		this.borrowers = borrowers;
 	}
 
-	@OneToMany(mappedBy = "book_id")
+	@OneToMany(mappedBy = "book")
     private List<Borrower> borrowers;
 }

@@ -23,7 +23,7 @@ public class Membership {
     
     @Id
     @Column(name = "membership_id")
-    private UUID membership_id;
+    private UUID membership_id=UUID.randomUUID();
     
     @ManyToOne
     @JoinColumn(name = "membership_type_id")
@@ -98,7 +98,7 @@ public class Membership {
 	}
 
 	@Enumerated(EnumType.STRING)
-    @Column(name = "memeship_status")
+    @Column(name = "membership_status")
     private Status status;
     
     @ManyToOne
