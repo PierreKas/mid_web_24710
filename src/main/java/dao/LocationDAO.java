@@ -10,46 +10,109 @@ import java.util.List;
 import java.util.UUID;
 
 public class LocationDAO {
+    
+    // Create or Update a location
     public void saveLocation(Location location) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSession().openSession()) {
             transaction = session.beginTransaction();
-            session.save(location);
+            session.saveOrUpdate(location);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (transaction != null) {
+                transaction.rollback();
+            }
             e.printStackTrace();
         }
     }
-
-    public Location findById(UUID id) {
+    
+    // Get location by ID
+    public Location getLocationById(UUID id) {
         try (Session session = HibernateUtil.getSession().openSession()) {
             return session.get(Location.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
-
-    public List<Location> findByType(Location_type type) {
-    	if (type == null) {
-            throw new IllegalArgumentException("Location_type cannot be null");
-        }
-    	try (Session session = HibernateUtil.getSession().openSession()) {
-            return session.createQuery(
-                "FROM Location WHERE type = :type", Location.class)
-                .setParameter("type", type)
-                .list();
-        }
-    }
-
-    public List<Location> findChildrenByParentId(UUID parentId) {
+    
+    // Get all locations
+    public List<Location> getAllLocations() {
         try (Session session = HibernateUtil.getSession().openSession()) {
-            if (parentId == null) {
-                throw new IllegalArgumentException("Parent ID cannot be null");
-            }
-            return session.createQuery(
-                "FROM Location WHERE parent.location_id = :parentId", Location.class)
-                .setParameter("parentId", parentId)
-                .list();
+            return session.createQuery("FROM Location", Location.class).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
-
+    
+    // Delete a location
+    public void deleteLocation(Location location) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSession().openSession()) {
+            transaction = session.beginTransaction();
+            session.delete(location);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+    
+    // Get locations by type
+    public List<Location> getLocationsByType(Location_type type) {
+        try (Session session = HibernateUtil.getSession().openSession()) {
+            return session.createQuery("FROM Location WHERE locationType = :type", Location.class)
+                    .setParameter("type", type)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    // Get child locations by parent ID
+    public List<Location> getChildLocations(UUID parentId) {
+        try (Session session = HibernateUtil.getSession().openSession()) {
+            return session.createQuery("FROM Location WHERE parentId = :parentId", Location.class)
+                    .setParameter("parentId", parentId)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    // Get location by code
+    public Location getLocationByCode(String code) {
+        try (Session session = HibernateUtil.getSession().openSession()) {
+            return session.createQuery("FROM Location WHERE locationCode = :code", Location.class)
+                    .setParameter("code", code)
+                    .uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    // Update location name
+    public void updateLocationName(UUID locationId, String newName) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSession().openSession()) {
+            transaction = session.beginTransaction();
+            Location location = session.get(Location.class, locationId);
+            if (location != null) {
+                location.setLocationName(newName);
+                session.update(location);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
 }

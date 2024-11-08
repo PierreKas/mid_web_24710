@@ -80,54 +80,57 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            // Update parent location dropdown based on selected type
-            $('#locationType').change(function() {
-                let type = $(this).val();
-                let parentType;
-                
-                switch(type) {
-                    case 'DISTRICT': parentType = 'PROVINCE'; break;
-                    case 'SECTOR': parentType = 'DISTRICT'; break;
-                    case 'CELL': parentType = 'SECTOR'; break;
-                    case 'VILLAGE': parentType = 'CELL'; break;
-                    default: parentType = null;
-                }
-                
-                if (parentType) {
-                    $.get('${pageContext.request.contextPath}/admin/location/byType', 
-                        { type: parentType },
-                        function(data) {
-                            let options = '<option value="">Select Parent</option>';
-                            data.forEach(function(location) {
-                                options += `<option value="${location.location_id}">${location.location_name}</option>`;
-                            });
-                            $('#parentLocation').html(options);
-                        });
-                }
-            });
-
-            // Load child locations
-            $('.load-children').click(function() {
-                let parentId = $(this).closest('li').data('id');
-                let container = $(this).closest('.col').next();
-                
-                $.get('${pageContext.request.contextPath}/admin/location/children',
-                    { parentId: parentId },
+  <script>
+    $(document).ready(function() {
+        // Log the selected location type when it changes
+        $('#locationType').change(function() {
+            console.log("Selected location type: ", $(this).val());
+            
+            let type = $(this).val();
+            let parentType;
+            
+            switch(type) {
+                case 'DISTRICT': parentType = 'PROVINCE'; break;
+                case 'SECTOR': parentType = 'DISTRICT'; break;
+                case 'CELL': parentType = 'SECTOR'; break;
+                case 'VILLAGE': parentType = 'CELL'; break;
+                default: parentType = null;
+            }
+            
+            if (parentType) {
+                $.get('${pageContext.request.contextPath}/admin/location/byType', 
+                    { type: parentType },
                     function(data) {
-                        let html = '<ul class="list-group">';
+                        let options = '<option value="">Select Parent</option>';
                         data.forEach(function(location) {
-                            html += `<li class="list-group-item" data-id="${location.location_id}">
-                                ${location.location_name}
-                                <button class="btn btn-sm btn-link load-children">Show Children</button>
-                            </li>`;
+                            options += `<option value="${location.location_id}">${location.location_name}</option>`;
                         });
-                        html += '</ul>';
-                        container.html(html);
+                        $('#parentLocation').html(options);
                     });
-            });
+            }
         });
-    </script>
+
+        // Load child locations
+        $('.load-children').click(function() {
+            let parentId = $(this).closest('li').data('id');
+            let container = $(this).closest('.col').next();
+            
+            $.get('${pageContext.request.contextPath}/admin/location/children',
+                { parentId: parentId },
+                function(data) {
+                    let html = '<ul class="list-group">';
+                    data.forEach(function(location) {
+                        html += `<li class="list-group-item" data-id="${location.location_id}">
+                            ${location.location_name}
+                            <button class="btn btn-sm btn-link load-children">Show Children</button>
+                        </li>`;
+                    });
+                    html += '</ul>';
+                    container.html(html);
+                });
+        });
+    });
+</script>
+
 </body>
 </html>

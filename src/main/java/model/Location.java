@@ -1,113 +1,93 @@
 package model;
 
-import java.util.List;
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.UUID;
 
 @Entity
-@Table(name = "Location")
-public class Location {
-    @Column(name = "location_code")
-    private String location_code;
+@Table(name = "location")
+public class Location implements Serializable {
     
     @Id
     @Column(name = "location_id")
-    private UUID location_id=UUID.randomUUID();;
+    private UUID locationId=UUID.randomUUID();
     
     @Column(name = "location_name")
-    private String location_name;
+    private String locationName;
     
     @Enumerated(EnumType.STRING)
-    @Column(name = "Location_Type")
-    private Location_type type;
+    @Column(name = "location_type")
+    private Location_type locationType;
     
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private Location parent;
+    @Column(name = "location_code")
+    private String locationCode;
     
-    @OneToMany(mappedBy = "parent")
-    private List<Location> children;
+//    @Column(name = "parent_id")
+//    private UUID parentId=UUID.randomUUID();
+    
+//    public Location() {
+//		super();
+//	}
+
+	public Location(UUID locationId, String locationName, Location_type locationType, String locationCode) {
+		super();
+		this.locationId = locationId;
+		this.locationName = locationName;
+		this.locationType = locationType;
+		this.locationCode = locationCode;
+		//this.parentId = parentId;
+	}
+
+	public UUID getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(UUID locationId) {
+		this.locationId = locationId;
+	}
+
+	public String getLocationName() {
+		return locationName;
+	}
+
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+
+	public Location_type getLocationType() {
+		return locationType;
+	}
+
+	public void setLocationType(Location_type locationType) {
+		this.locationType = locationType;
+	}
+
+	public String getLocationCode() {
+		return locationCode;
+	}
+
+	public void setLocationCode(String locationCode) {
+		this.locationCode = locationCode;
+	}
+
+//	public UUID getParentId() {
+//		return parentId;
+//	}
+//
+//	public void setParentId(UUID parentId) {
+//		this.parentId = parentId;
+//	}
+
+	// Default constructor
     public Location() {
     }
-    public Location(String location_code, UUID location_id, String location_name, Location_type type, Location parent,
-			List<Location> children, List<User> users) {
-		super();
-		this.location_code = location_code;
-		this.location_id = location_id;
-		this.location_name = location_name;
-		this.type = type;
-		this.parent = parent;
-		this.children = children;
-		this.users = users;
-	}
-
-	public String getLocation_code() {
-		return location_code;
-	}
-
-	public void setLocation_code(String location_code) {
-		this.location_code = location_code;
-	}
-
-	public UUID getLocation_id() {
-		return location_id;
-	}
-
-	public void setLocation_id(UUID location_id) {
-		this.location_id = location_id;
-	}
-
-	public String getLocation_name() {
-		return location_name;
-	}
-
-	public void setLocation_name(String location_name) {
-		this.location_name = location_name;
-	}
-
-	public Location_type getType() {
-		return type;
-	}
-
-	public void setType(Location_type type) {
-		this.type = type;
-	}
-
-	public Location getParent() {
-		return parent;
-	}
-
-	public void setParent(Location parent) {
-		this.parent = parent;
-	}
-
-	public List<Location> getChildren() {
-		return children;
-	}
-
-	public void setChildren(List<Location> children) {
-		this.children = children;
-	}
-
-	public List<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
-//	@OneToMany(mappedBy = "village_id")
-//    private List<User> users;
-	@OneToMany(mappedBy = "village")  // should match the field name in User class
-	private List<User> users;
+    
+   
 }

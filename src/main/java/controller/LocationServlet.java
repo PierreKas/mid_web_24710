@@ -1,84 +1,193 @@
 package controller;
 
-import java.io.IOException;
-import java.util.UUID;
-import java.util.List;  // Correct List import
+import service.LocationService;
+import model.Location;
+import model.Location_type;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
-import com.fasterxml.jackson.databind.ObjectMapper;  // Added Jackson import
-
-import model.Location;
-import dao.LocationDAO;
-import model.Location_type;
-
-@WebServlet("/admin/location/*")
+@WebServlet("/location/*")
 public class LocationServlet extends HttpServlet {
-    private LocationDAO locationDAO;
-    
-    @Override
+    private LocationService locationService;
+
     public void init() {
-        locationDAO = new LocationDAO();
+        locationService = new LocationService();
     }
-    
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        String pathInfo = req.getPathInfo();
-        
-        if (pathInfo == null || pathInfo.equals("/")) {
-            // Show location management page
-            String typeParam = req.getParameter("type");
-            Location_type type = null;
+        String action = request.getPathInfo();
+        if (action == null) {
+            action = "";
+        }
 
-            if (typeParam != null) {
-                try {
-                    type = Location_type.valueOf(typeParam);
-                } catch (IllegalArgumentException e) {
-                    // Handle invalid type (return error response or log)
-                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid location type.");
-                    return;
-                }
+        try {
+            switch (action) {
+                case "/new":
+                    showNewForm(request, response);
+                    break;
+                case "/edit":
+                    showEditForm(request, response);
+                    break;
+                case "/delete":
+                    deleteLocation(request, response);
+                    break;
+                default:
+                    listLocations(request, response);
+                    break;
             }
+        } catch (Exception ex) {
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
+        }
+    }
 
-            List<Location> provinces = locationDAO.findByType(type);
-            req.setAttribute("provinces", provinces);
-            req.getRequestDispatcher("/WEB-INF/admin/locations.jsp").forward(req, resp);
-        } else if (pathInfo.equals("/children")) {
-            // AJAX endpoint for loading child locations
-            String parentId = req.getParameter("parentId");
-            if (parentId == null || parentId.isEmpty()) {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parent ID cannot be null or empty.");
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String action = request.getPathInfo();
+        if (action == null) {
+            action = "";
+        }
+
+        try {
+            switch (action) {
+                case "/insert":
+                    insertLocation(request, response);
+                    break;
+                case "/update":
+                    updateLocation(request, response);
+                    break;
+                default:
+                    response.sendRedirect(request.getContextPath() + "/location/list");
+                    break;
+            }
+        } catch (Exception ex) {
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
+        }
+    }
+
+    private void listLocations(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        List<Location> locations = locationService.getAllLocations();
+        request.setAttribute("locations", locations);
+        request.getRequestDispatcher("/WEB-INF/location/list.jsp").forward(request, response);
+    }
+
+    private void showNewForm(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        Location_type selectedType = null;
+        String typeParam = request.getParameter("type");
+        if (typeParam != null && !typeParam.isEmpty()) {
+            selectedType = Location_type.valueOf(typeParam);
+        }
+        
+        request.setAttribute("locationTypes", Location_type.values());
+        if (selectedType != null) {
+            request.setAttribute("possibleParents", locationService.getPossibleParents(selectedType));
+        }
+        request.getRequestDispatcher("/WEB-INF/location/form.jsp").forward(request, response);
+    }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        try {
+            String id = request.getParameter("id");
+            Location location = locationService.getLocationById(UUID.fromString(id));
+            if (location == null) {
+                request.getSession().setAttribute("errorMessage", "Location not found");
+                response.sendRedirect(request.getContextPath() + "/location/list");
                 return;
             }
-
-            List<Location> children = locationDAO.findChildrenByParentId(UUID.fromString(parentId));
-            // Return as JSON
-            resp.setContentType("application/json");
-            new ObjectMapper().writeValue(resp.getOutputStream(), children);
+            
+            request.setAttribute("location", location);
+            request.setAttribute("locationTypes", Location_type.values());
+            request.setAttribute("possibleParents", 
+                locationService.getPossibleParents(location.getLocationType()));
+            request.getRequestDispatcher("/WEB-INF/location/form.jsp").forward(request, response);
+            
+        } catch (Exception e) {
+            request.getSession().setAttribute("errorMessage", "Error loading location: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/location/list");
         }
     }
 
-    
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) 
-            throws ServletException, IOException {
-        // Create new location
-        Location location = new Location();  // Now works with default constructor
-        location.setLocation_code(req.getParameter("code"));
-        location.setLocation_name(req.getParameter("name"));
-        location.setType(Location_type.valueOf(req.getParameter("type")));
-        
-        String parentId = req.getParameter("parentId");
-        if (parentId != null && !parentId.isEmpty()) {
-            location.setParent(locationDAO.findById(UUID.fromString(parentId)));
+    private void insertLocation(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException {
+        try {
+            Location location = new Location();
+            populateLocationFromRequest(location, request);
+            locationService.createLocation(location);
+            
+            request.getSession().setAttribute("successMessage", "Location created successfully");
+            response.sendRedirect(request.getContextPath() + "/location/list");
+            
+        } catch (Exception e) {
+            request.getSession().setAttribute("errorMessage", "Error creating location: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/location/new");
         }
+    }
+
+    private void updateLocation(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException {
+        try {
+            String id = request.getParameter("id");
+            Location location = locationService.getLocationById(UUID.fromString(id));
+            
+            if (location == null) {
+                request.getSession().setAttribute("errorMessage", "Location not found");
+                response.sendRedirect(request.getContextPath() + "/location/list");
+                return;
+            }
+            
+            populateLocationFromRequest(location, request);
+            locationService.updateLocation(location);
+            
+            request.getSession().setAttribute("successMessage", "Location updated successfully");
+            response.sendRedirect(request.getContextPath() + "/location/list");
+            
+        } catch (Exception e) {
+            request.getSession().setAttribute("errorMessage", "Error updating location: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/location/edit?id=" + request.getParameter("id"));
+        }
+    }
+
+    private void deleteLocation(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException {
+        try {
+            String id = request.getParameter("id");
+            locationService.deleteLocation(UUID.fromString(id));
+            
+            request.getSession().setAttribute("successMessage", "Location deleted successfully");
+            response.sendRedirect(request.getContextPath() + "/location/list");
+            
+        } catch (Exception e) {
+            request.getSession().setAttribute("errorMessage", "Error deleting location: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/location/list");
+        }
+    }
+
+    private void populateLocationFromRequest(Location location, HttpServletRequest request) {
+        String locationName = request.getParameter("locationName");
+        String locationCode = request.getParameter("locationCode");
+        String locationType = request.getParameter("locationType");
+       // String parentId = request.getParameter("parentId");
+
+        location.setLocationName(locationName);
+        location.setLocationCode(locationCode);
+        location.setLocationType(Location_type.valueOf(locationType));
         
-        locationDAO.saveLocation(location);
-        resp.sendRedirect(req.getContextPath() + "/admin/location");
+//        if (parentId != null && !parentId.trim().isEmpty()) {
+//            location.setParentId(UUID.fromString(parentId));
+//        }
     }
 }
