@@ -8,22 +8,6 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class Person {
-//    @Id
-//    @Column(name = "person_id")
-//    private String person_id;
-//    
-//    @Column(name = "first_name")
-//    private String first_name;
-//    
-//    @Column(name = "last_name")
-//    private String last_name;
-//    
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "GENDER")
-//    private Gender gender;
-//    
-//    @Column(name = "phone_number")
-//    private String phone_number;
 	    @Id
 	    @Column(name = "person_id")
 	    private String person_id;
