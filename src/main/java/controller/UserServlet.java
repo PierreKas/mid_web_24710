@@ -90,6 +90,26 @@ public class UserServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request, response);
     }
 
+//    private void showEditForm(HttpServletRequest request, HttpServletResponse response) 
+//            throws ServletException, IOException {
+//        try {
+//            String id = request.getParameter("id");
+//            User user = userService.getUserById(id);
+//            if (user == null) {
+//                request.getSession().setAttribute("errorMessage", "User not found");
+//                response.sendRedirect(request.getContextPath() + "/user/list");
+//                return;
+//            }
+//            
+//            request.setAttribute("user", user);
+//            request.setAttribute("roles", Role.values());
+//            request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request, response);
+//            
+//        } catch (Exception e) {
+//            request.getSession().setAttribute("errorMessage", "Error loading user: " + e.getMessage());
+//            response.sendRedirect(request.getContextPath() + "/user/list");
+//        }
+//    }
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         try {
@@ -101,6 +121,8 @@ public class UserServlet extends HttpServlet {
                 return;
             }
             
+          //  List<Location> villages = userService.getAllVillages();
+          //  request.setAttribute("villages", villages);
             request.setAttribute("user", user);
             request.setAttribute("roles", Role.values());
             request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request, response);

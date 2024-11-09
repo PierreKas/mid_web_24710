@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Location Management</title>
+    <title>Room Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
 </head>
@@ -11,11 +11,11 @@
     <div class="container mt-4">
         <div class="row mb-3">
             <div class="col">
-                <h2>Location Management</h2>
+                <h2>Room Management</h2>
             </div>
             <div class="col text-end">
-                <a href="${pageContext.request.contextPath}/location/new" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Add New Location
+                <a href="${pageContext.request.contextPath}/room/new" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add New Room
                 </a>
             </div>
         </div>
@@ -40,34 +40,22 @@
             <table class="table table-striped table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th>Location Name</th>
-                        <th>Location Code</th>
-                        <th>Type</th>
-                        <th>Parent Location</th>
+                        <th>Room Code</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="location" items="${locations}">
+                    <c:forEach var="room" items="${rooms}">
                         <tr>
-                            <td>${location.locationName}</td>
-                            <td>${location.locationCode}</td>
-                            <td>${location.locationType}</td>
-                            <td>
-                                <c:forEach var="loc" items="${locations}">
-                                    <c:if test="${loc.locationId == location.parentId}">
-                                        ${loc.locationName}
-                                    </c:if>
-                                </c:forEach>
-                            </td>
+                            <td>${room.room_code}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="${pageContext.request.contextPath}/location/edit?id=${location.locationId}" 
+                                    <a href="${pageContext.request.contextPath}/room/edit?id=${room.room_id}" 
                                        class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-pencil"></i> Edit
                                     </a>
                                     <button type="button" class="btn btn-sm btn-outline-danger" 
-                                            onclick="confirmDelete('${location.locationId}', '${location.locationName}')">
+                                            onclick="confirmDelete('${room.room_id}', '${room.room_code}')">
                                         <i class="bi bi-trash"></i> Delete
                                     </button>
                                 </div>
@@ -88,7 +76,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to delete location: <span id="locationNameToDelete"></span>?
+                    Are you sure you want to delete room: <span id="roomCodeToDelete"></span>?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -100,10 +88,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function confirmDelete(locationId, locationName) {
-            document.getElementById('locationNameToDelete').textContent = locationName;
+        function confirmDelete(roomId, roomCode) {
+            document.getElementById('roomCodeToDelete').textContent = roomCode;
             document.getElementById('confirmDeleteButton').href = 
-                '${pageContext.request.contextPath}/location/delete?id=' + locationId;
+                '${pageContext.request.contextPath}/room/delete?id=' + roomId;
             new bootstrap.Modal(document.getElementById('deleteModal')).show();
         }
     </script>

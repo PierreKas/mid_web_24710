@@ -181,14 +181,14 @@ public class LocationServlet extends HttpServlet {
         String locationName = request.getParameter("locationName");
         String locationCode = request.getParameter("locationCode");
         String locationType = request.getParameter("locationType");
-       // String parentId = request.getParameter("parentId");
+        String parentId = request.getParameter("parentId");
 
         location.setLocationName(locationName);
         location.setLocationCode(locationCode);
         location.setLocationType(Location_type.valueOf(locationType));
         
-//        if (parentId != null && !parentId.trim().isEmpty()) {
-//            location.setParentId(UUID.fromString(parentId));
-//        }
+        if (parentId != null && !parentId.trim().isEmpty()) {
+           // location.setParentId(UUID.fromString(parentId));
+        }
     }
 }

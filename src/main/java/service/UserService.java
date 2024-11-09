@@ -42,6 +42,8 @@ public class UserService {
         userDAO.saveUser(user);
     }
     
+    
+    
     public void updateUser(User user) throws Exception {
         // Validate required fields
         if (user.getFirst_name() == null || user.getFirst_name().trim().isEmpty()) {

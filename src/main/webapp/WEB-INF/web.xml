@@ -11,7 +11,7 @@
 
     
         <welcome-file-list>
-        <welcome-file>location/list.jsp</welcome-file>
+        <welcome-file>shelf/list.jsp</welcome-file>
     </welcome-file-list>
 
 </web-app>

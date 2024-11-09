@@ -116,6 +116,11 @@ public class LocationService {
                     throw new Exception("Village must have Cell as parent");
                 }
                 break;
+            case PROVINCE:
+                // Allow Province to have a null parent
+                break;
+            default:
+                throw new Exception("Invalid location type");
         }
     }
     

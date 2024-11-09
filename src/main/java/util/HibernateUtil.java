@@ -1,59 +1,15 @@
-//package util;
-//
-//import java.util.Properties;
-//
-//import org.hibernate.SessionFactory;
-//import org.hibernate.cfg.Configuration;
-//import org.hibernate.cfg.Environment;
-//
-//import model.Location;
-//
-//
-//public class HibernateUtil {
-//    
-//    private static SessionFactory sessionFactory = null;
-//    
-//    public static SessionFactory getSession() {
-//        if(sessionFactory == null) {
-//            Configuration conf = new Configuration();
-//            Properties settings = new Properties();
-//            
-//            // Database connection settings
-//            settings.setProperty(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-//            settings.setProperty(Environment.URL, "jdbc:mysql://localhost:3306/auca_library_db");
-//            settings.setProperty(Environment.USER, "pierre");
-//            settings.setProperty(Environment.PASS, "KASANANI");
-//            
-//            // Hibernate settings
-//            settings.setProperty(Environment.HBM2DDL_AUTO, "update");
-//            settings.setProperty(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
-//            settings.setProperty(Environment.SHOW_SQL, "true");
-//            settings.put(Environment.HBM2DDL_AUTO, "update");
-//            // Apply settings
-//            conf.setProperties(settings);
-//            
-//            // Add annotated classes
-//           conf.addAnnotatedClass(Location.class);
-////            conf.addAnnotatedClass(User.class);
-////            conf.addAnnotatedClass(Book.class);
-////            conf.addAnnotatedClass(Borrower.class);
-////            conf.addAnnotatedClass(Membership.class);
-////            conf.addAnnotatedClass(membership_type.class);
-////            conf.addAnnotatedClass(Shelf.class);
-////            conf.addAnnotatedClass(Room.class);
-//            
-//            sessionFactory = conf.buildSessionFactory();
-//        }
-//        return sessionFactory;
-//    }
-//}
 package util;
+
+import java.awt.print.Book;
 
 import java.util.Properties;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import model.Location;
+import model.Room;
+import model.Shelf;
+import model.User;
 
 public class HibernateUtil {
     private static SessionFactory sessionFactory = null;
@@ -86,13 +42,13 @@ public class HibernateUtil {
                 
                 // Add annotated classes
                 conf.addAnnotatedClass(Location.class);
-                // conf.addAnnotatedClass(User.class);
-                // conf.addAnnotatedClass(Book.class);
+                conf.addAnnotatedClass(User.class);
+                //conf.addAnnotatedClass(Book.class);
                 // conf.addAnnotatedClass(Borrower.class);
                 // conf.addAnnotatedClass(Membership.class);
                 // conf.addAnnotatedClass(membership_type.class);
-                // conf.addAnnotatedClass(Shelf.class);
-                // conf.addAnnotatedClass(Room.class);
+                 conf.addAnnotatedClass(Shelf.class);
+                 conf.addAnnotatedClass(Room.class);
                 
                 sessionFactory = conf.buildSessionFactory();
             } catch (Exception e) {

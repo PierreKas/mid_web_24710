@@ -7,6 +7,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.UUID;
@@ -29,21 +31,22 @@ public class Location implements Serializable {
     @Column(name = "location_code")
     private String locationCode;
     
-//    @Column(name = "parent_id")
-//    private UUID parentId=UUID.randomUUID();
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Location parentId;
     
 //    public Location() {
 //		super();
 //	}
 
-	public Location(UUID locationId, String locationName, Location_type locationType, String locationCode) {
-		super();
-		this.locationId = locationId;
-		this.locationName = locationName;
-		this.locationType = locationType;
-		this.locationCode = locationCode;
-		//this.parentId = parentId;
-	}
+//	public Location(UUID locationId, String locationName, Location_type locationType, String locationCode, UUID parentId) {
+//		super();
+//		this.locationId = locationId;
+//		this.locationName = locationName;
+//		this.locationType = locationType;
+//		this.locationCode = locationCode;
+//		this.parentId = parentId;
+//	}
 
 	public UUID getLocationId() {
 		return locationId;
@@ -77,13 +80,13 @@ public class Location implements Serializable {
 		this.locationCode = locationCode;
 	}
 
-//	public UUID getParentId() {
-//		return parentId;
-//	}
-//
-//	public void setParentId(UUID parentId) {
-//		this.parentId = parentId;
-//	}
+	public Location getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Location parentId) {
+		this.parentId = parentId;
+	}
 
 	// Default constructor
     public Location() {

@@ -51,7 +51,8 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="locationType" class="form-label">Location Type</label>
-                            <select class="form-select" id="locationType" name="locationType" required>
+                            <select class="form-select" id="locationType" name="locationType" required 
+                                    onchange="updateParentOptions(this.value)">
                                 <option value="">Select Type</option>
                                 <option value="PROVINCE" ${location.locationType == 'PROVINCE' ? 'selected' : ''}>Province</option>
                                 <option value="DISTRICT" ${location.locationType == 'DISTRICT' ? 'selected' : ''}>District</option>
@@ -60,6 +61,20 @@
                                 <option value="VILLAGE" ${location.locationType == 'VILLAGE' ? 'selected' : ''}>Village</option>
                             </select>
                             <div class="invalid-feedback">Please select a location type.</div>
+                        </div>
+                        
+                        <div class="col-md-6" id="parentLocationDiv">
+                            <label for="parentId" class="form-label">Parent Location</label>
+                            <select class="form-select" id="parentId" name="parentId">
+                                <option value="">Select Parent Location</option>
+                                <c:forEach var="parent" items="${possibleParents}">
+                                    <option value="${parent.locationId}" 
+                                            ${location.parentId == parent.locationId ? 'selected' : ''}>
+                                        ${parent.locationName}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                            <div class="invalid-feedback">Please select a parent location.</div>
                         </div>
                     </div>
                     
@@ -92,6 +107,48 @@
                 }, false)
             })
         })()
+        
+        // Dynamic parent location handling
+        function updateParentOptions(selectedType) {
+            if (!selectedType) {
+                document.getElementById('parentLocationDiv').style.display = 'none';
+                return;
+            }
+
+            const locationHierarchy = ['PROVINCE', 'DISTRICT', 'SECTOR', 'CELL', 'VILLAGE'];
+            const selectedIndex = locationHierarchy.indexOf(selectedType);
+            
+            const parentLocationDiv = document.getElementById('parentLocationDiv');
+            if (selectedIndex === 0) {
+                parentLocationDiv.style.display = 'none';
+                document.getElementById('parentId').value = '';
+            } else {
+                parentLocationDiv.style.display = 'block';
+                
+                fetch('${pageContext.request.contextPath}/location/new?type=' + locationHierarchy[selectedIndex - 1])
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newParentOptions = doc.querySelector('#parentId').innerHTML;
+                        document.getElementById('parentId').innerHTML = newParentOptions;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching parent locations:', error);
+                        parentLocationDiv.style.display = 'none';
+                    });
+            }
+        }
+
+        // Initialize parent location visibility
+        document.addEventListener('DOMContentLoaded', function() {
+            const locationType = document.getElementById('locationType').value;
+            if (locationType) {
+                updateParentOptions(locationType);
+            } else {
+                document.getElementById('parentLocationDiv').style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
