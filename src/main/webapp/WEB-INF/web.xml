@@ -11,7 +11,7 @@
 
     
         <welcome-file-list>
-        <welcome-file>borrower/list.jsp</welcome-file>
+        <welcome-file>user/list.jsp</welcome-file>
     </welcome-file-list>
 
 </web-app>

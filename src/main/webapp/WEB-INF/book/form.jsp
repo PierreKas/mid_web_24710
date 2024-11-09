@@ -76,13 +76,26 @@
                         <div class="col-md-6">
                             <label for="status" class="form-label">Status</label>
                             <select class="form-select" id="status" name="status" required>
-                                <c:forEach var="statusOption" items="<%= model.Book_status.values() %>">
+                                <c:forEach var="statusOption" items="${bookStatuses}">
                                     <option value="${statusOption}" ${book.status == statusOption ? 'selected' : ''}>
                                         ${statusOption}
                                     </option>
                                 </c:forEach>
                             </select>
                             <div class="invalid-feedback">Please select a status.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="shelf_id" class="form-label">Shelf</label>
+                            <select class="form-select" id="shelf_id" name="shelf_id" required>
+                                <option value="">Select a shelf</option>
+                                <c:forEach var="shelf" items="${shelves}">
+                                    <option value="${shelf.id}" ${book.shelf_id == shelf.id ? 'selected' : ''}>
+                                        ${shelf.shelf_name}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                            <div class="invalid-feedback">Please select a shelf.</div>
                         </div>
                     </div>
 

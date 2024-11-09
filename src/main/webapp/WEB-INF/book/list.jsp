@@ -47,6 +47,7 @@
                         <th>Publisher</th>
                         <th>Publication Year</th>
                         <th>Status</th>
+                         <th>Shelf name</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -63,6 +64,7 @@
                                     ${book.status}
                                 </span>
                             </td>
+                            <td>${book.shelf.shelf_name}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="${pageContext.request.contextPath}/book/edit?id=${book.book_id}" 

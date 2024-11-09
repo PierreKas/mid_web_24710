@@ -2,7 +2,9 @@ package controller;
 
 import model.Book;
 import model.Book_status;
+import model.Shelf;
 import service.BookService;
+import service.ShelfService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,9 +19,11 @@ import java.util.UUID;
 @WebServlet("/book/*")
 public class BookServlet extends HttpServlet {
     private BookService bookService;
+    private ShelfService shelfService;
 
     public void init() {
         bookService = new BookService();
+        shelfService = new ShelfService();
     }
 
     @Override
@@ -84,22 +88,100 @@ public class BookServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/book/list.jsp").forward(request, response);
     }
 
+//    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        request.getRequestDispatcher("/WEB-INF/book/form.jsp").forward(request, response);
+//    }
+
+//    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        List<Shelf> shelves = shelfService.getAllShelves();
+//        request.setAttribute("shelves", shelves);
+//        request.getRequestDispatcher("/WEB-INF/book/form.jsp").forward(request, response);
+//    }
+    
+//    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        try {
+//            List<Shelf> shelves = shelfService.getAllShelves();
+//            request.setAttribute("shelves", shelves);
+//            request.getRequestDispatcher("/WEB-INF/book/form.jsp").forward(request, response);
+//        } catch (Exception e) {
+//            // Set error message and redirect to list page instead of showing error.jsp
+//            request.getSession().setAttribute("errorMessage", "Error loading shelves: " + e.getMessage());
+//            response.sendRedirect(request.getContextPath() + "/book/list");
+//        }
+//    }
+//    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        try {
+//            String id = request.getParameter("id");
+//            Book book = bookService.getBookById(UUID.fromString(id));
+//            if (book == null) {
+//                request.getSession().setAttribute("errorMessage", "Book not found");
+//                response.sendRedirect(request.getContextPath() + "/book/list");
+//                return;
+//            }
+//
+//            request.setAttribute("book", book);
+//            request.getRequestDispatcher("/WEB-INF/book/form.jsp").forward(request, response);
+//
+//        } catch (Exception e) {
+//            request.getSession().setAttribute("errorMessage", "Error loading book: " + e.getMessage());
+//            response.sendRedirect(request.getContextPath() + "/book/list");
+//        }
+//    }
+    
+//    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        try {
+//            String id = request.getParameter("id");
+//            Book book = bookService.getBookById(UUID.fromString(id));
+//            List<Shelf> shelves = shelfService.getAllShelves();
+//            
+//            if (book == null) {
+//                request.getSession().setAttribute("errorMessage", "Book not found");
+//                response.sendRedirect(request.getContextPath() + "/book/list");
+//                return;
+//            }
+//
+//            request.setAttribute("shelves", shelves);
+//            request.setAttribute("book", book);
+//            request.getRequestDispatcher("/WEB-INF/book/form.jsp").forward(request, response);
+//
+//        } catch (Exception e) {
+//            request.getSession().setAttribute("errorMessage", "Error loading book: " + e.getMessage());
+//            response.sendRedirect(request.getContextPath() + "/book/list");
+//        }
+//    }
     private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/book/form.jsp").forward(request, response);
+        try {
+            List<Shelf> shelves = shelfService.getAllShelves();
+            request.setAttribute("shelves", shelves);
+            request.setAttribute("bookStatuses", Book_status.values());  // Add this line
+            request.getRequestDispatcher("/WEB-INF/book/form.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.getSession().setAttribute("errorMessage", "Error loading form data: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/book/list");
+        }
     }
-
+    
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             String id = request.getParameter("id");
             Book book = bookService.getBookById(UUID.fromString(id));
+            List<Shelf> shelves = shelfService.getAllShelves();
+            
             if (book == null) {
                 request.getSession().setAttribute("errorMessage", "Book not found");
                 response.sendRedirect(request.getContextPath() + "/book/list");
                 return;
             }
 
+            request.setAttribute("shelves", shelves);
+            request.setAttribute("bookStatuses", Book_status.values());  // Add this line
             request.setAttribute("book", book);
             request.getRequestDispatcher("/WEB-INF/book/form.jsp").forward(request, response);
 
@@ -108,7 +190,6 @@ public class BookServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/book/list");
         }
     }
-
     private void insertBook(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         try {
@@ -164,13 +245,62 @@ public class BookServlet extends HttpServlet {
         }
     }
 
+//    private void populateBookFromRequest(Book book, HttpServletRequest request) {
+//        book.setTitle(request.getParameter("title"));
+//        book.setISBNCode(request.getParameter("isbnCode"));
+//        book.setEdition(Integer.parseInt(request.getParameter("edition")));
+//        book.setPublisher_name(request.getParameter("publisher_name"));
+//        book.setPublication_year(Date.valueOf(request.getParameter("publication_year")));
+//        book.setStatus(Book_status.valueOf(request.getParameter("status")));
+//        // Note: Shelf assignment would need to be handled separately
+//    }
+//    private void populateBookFromRequest(Book book, HttpServletRequest request) {
+//        book.setTitle(request.getParameter("title"));
+//        book.setISBNCode(request.getParameter("isbnCode"));
+//        book.setEdition(Integer.parseInt(request.getParameter("edition")));
+//        book.setPublisher_name(request.getParameter("publisher_name"));
+//        book.setPublication_year(Date.valueOf(request.getParameter("publication_year")));
+//        book.setStatus(Book_status.valueOf(request.getParameter("status")));
+//        
+//        // Handle shelf assignment - stores only the ID in the book table
+//        String shelfId = request.getParameter("shelf_id");
+//        if (shelfId != null && !shelfId.isEmpty()) {
+//            Shelf shelf = shelfService.getShelfById(UUID.fromString(shelfId));
+//            book.setShelf(shelf);
+//        }
+//    }
+    
     private void populateBookFromRequest(Book book, HttpServletRequest request) {
-        book.setTitle(request.getParameter("title"));
-        book.setISBNCode(request.getParameter("isbnCode"));
-        book.setEdition(Integer.parseInt(request.getParameter("edition")));
-        book.setPublisher_name(request.getParameter("publisher_name"));
-        book.setPublication_year(Date.valueOf(request.getParameter("publication_year")));
-        book.setStatus(Book_status.valueOf(request.getParameter("status")));
-        // Note: Shelf assignment would need to be handled separately
+        try {
+            book.setTitle(request.getParameter("title"));
+            book.setISBNCode(request.getParameter("isbnCode"));
+            book.setEdition(Integer.parseInt(request.getParameter("edition")));
+            book.setPublisher_name(request.getParameter("publisher_name"));
+            book.setPublication_year(Date.valueOf(request.getParameter("publication_year")));
+            
+            String statusStr = request.getParameter("status");
+            if (statusStr != null && !statusStr.isEmpty()) {
+                book.setStatus(Book_status.valueOf(statusStr.trim()));
+            }
+            
+            // Handle shelf assignment with better error handling
+            String shelfId = request.getParameter("shelf_id");
+            if (shelfId != null && !shelfId.isEmpty()) {
+                try {
+                    UUID shelfUUID = UUID.fromString(shelfId);
+                    Shelf shelf = shelfService.getShelfById(shelfUUID);
+                    if (shelf == null) {
+                        throw new IllegalArgumentException("Shelf not found with ID: " + shelfId);
+                    }
+                    book.setShelf(shelf);
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Invalid shelf ID format: " + shelfId, e);
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Error populating book from request: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error while populating book from request", e);
+        }
     }
 }
