@@ -6,6 +6,7 @@ import model.Role;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
 import java.util.Base64;
 
 public class UserService {
@@ -88,8 +89,8 @@ public class UserService {
         }
     }
     
-    public User getUserById(String id) {
-        return userDAO.getUserById(id);
+    public User getUserById(String uuid) {
+        return userDAO.getUserById(uuid);
     }
     
     public List<User> getAllUsers() {

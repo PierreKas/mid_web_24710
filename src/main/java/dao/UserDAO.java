@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 import util.HibernateUtil;
 
 import java.util.List;
+import java.util.UUID;
 
 public class UserDAO {
     
@@ -27,9 +28,9 @@ public class UserDAO {
     }
     
     // Get user by ID
-    public User getUserById(String id) {
+    public User getUserById(String string) {
         try (Session session = HibernateUtil.getSession().openSession()) {
-            return session.get(User.class, id);
+            return session.get(User.class, string);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -37,10 +38,23 @@ public class UserDAO {
     }
     
     // Get all users
+//    public List<User> getAllUsers() {
+//        try (Session session = HibernateUtil.getSession().openSession()) {
+//            return session.createQuery("FROM User", User.class).list();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
     public List<User> getAllUsers() {
         try (Session session = HibernateUtil.getSession().openSession()) {
-            return session.createQuery("FROM User", User.class).list();
+            System.out.println("UserDAO: Opening session successful");
+            List<User> users = session.createQuery("FROM User", User.class).list();
+            System.out.println("UserDAO: Query executed, found " + 
+                (users != null ? users.size() : 0) + " users");
+            return users;
         } catch (Exception e) {
+            System.err.println("UserDAO: Error in getAllUsers(): " + e.getMessage());
             e.printStackTrace();
             return null;
         }

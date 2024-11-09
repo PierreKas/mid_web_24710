@@ -22,33 +22,34 @@ public class Shelf {
     @Column(name = "initial_stock")
     private Integer initial_stock;
     
-    @Column(name = "room_id")
-    private UUID room_id;
-    
+//    @Column(name = "room_id")
+//    private UUID room_id;
+//    
     // ManyToOne relationship with Room
     @ManyToOne
-    @JoinColumn(name = "room_id", insertable = false, updatable = false)
+    @JoinColumn(name = "room_id")// insertable = false, updatable = false
     private Room room;
     
-//    // OneToMany relationship with Book
-//    @OneToMany(mappedBy = "shelf")
-//    private List<Book> books;
+    // OneToMany relationship with Book
+    @OneToMany(mappedBy = "shelf")
+    private List<Book> books;
     public Shelf() {
         super();
         
     }
     // Add id to constructor
-    public Shelf(UUID id, Integer available_stock, String book_category, Integer borrowed_number, Integer initial_stock,
-            UUID room_id, Room room) {// List<Book> books
-        super();
+    public Shelf(UUID id, Integer available_stock, String book_category, Integer borrowed_number, Integer initial_stock, Room room, List<Book> books) {
+        //, UUID room_id
+        
+    	super();
         this.id = id;
         this.available_stock = available_stock;
         this.book_category = book_category;
         this.borrowed_number = borrowed_number;
         this.initial_stock = initial_stock;
-        this.room_id = room_id;
+       // this.room_id = room_id;
         this.room = room;
-        //this.books = books;
+        this.books = books;
     }
 
     // Add getter and setter for id
@@ -92,13 +93,13 @@ public class Shelf {
 		this.initial_stock = initial_stock;
 	}
 
-	public UUID getRoom_id() {
-		return room_id;
-	}
-
-	public void setRoom_id(UUID room_id) {
-		this.room_id = room_id;
-	}
+//	public UUID getRoom_id() {
+//		return room_id;
+//	}
+//
+//	public void setRoom_id(UUID room_id) {
+//		this.room_id = room_id;
+//	}
 
 	public Room getRoom() {
 		return room;
@@ -108,13 +109,13 @@ public class Shelf {
 		this.room = room;
 	}
 
-//	public List<Book> getBooks() {
-//		return books;
-//	}
-//
-//	public void setBooks(List<Book> books) {
-//		this.books = books;
-//	}
+	public List<Book> getBooks() {
+		return books;
+	}
 
+	public void setBooks(List<Book> books) {
+		this.books = books;
+	}
+	
    
 }

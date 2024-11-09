@@ -47,29 +47,49 @@ value="${shelf.room_id}" required>
 </div>
 </div>
 
-<div class="row mb-3">
-<div class="col-md-6">
-<label for="available_stock" class="form-label">Available Stock</label>
-<input type="number" class="form-control" id="available_stock" name="available_stock"
-value="${shelf.available_stock}" required>
-<div class="invalid-feedback">Please provide the available stock.</div>
-</div>
-<div class="col-md-6">
-<label for="borrowed_number" class="form-label">Borrowed Number</label>
-<input type="number" class="form-control" id="borrowed_number" name="borrowed_number"
-value="${shelf.borrowed_number}" required>
-<div class="invalid-feedback">Please provide the borrowed number.</div>
-</div>
-</div>
+  <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="book_category" class="form-label">Book Category</label>
+            <input type="text" class="form-control" id="book_category" name="book_category"
+                value="${shelf.book_category}" required>
+            <div class="invalid-feedback">Please provide a book category.</div>
+        </div>
+        <div class="col-md-6">
+            <label for="room_id" class="form-label">Room ID</label>
+            <input type="text" class="form-control" id="room_id" name="room_id"
+                value="${shelf.room_id}" required>
+            <div class="invalid-feedback">Please provide a room ID.</div>
+        </div>
+    </div>
 
-<div class="row mb-3">
-<div class="col-md-6">
-<label for="initial_stock" class="form-label">Initial Stock</label>
-<input type="number" class="form-control" id="initial_stock" name="initial_stock"
-value="${shelf.initial_stock}" required>
-<div class="invalid-feedback">Please provide the initial stock.</div>
-</div>
-</div>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="available_stock" class="form-label">Available Stock</label>
+            <input type="number" class="form-control" id="available_stock" name="available_stock"
+                value="${shelf.available_stock}" required>
+            <div class="invalid-feedback">Please provide the available stock.</div>
+        </div>
+        <div class="col-md-6">
+            <label for="borrowed_number" class="form-label">Borrowed Number</label>
+            <input type="number" class="form-control" id="borrowed_number" name="borrowed_number"
+                value="${shelf.borrowed_number}" required>
+            <div class="invalid-feedback">Please provide the borrowed number.</div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="initial_stock" class="form-label">Initial Stock</label>
+            <input type="number" class="form-control" id="initial_stock" name="initial_stock"
+                value="${shelf.initial_stock}" required>
+            <div class="invalid-feedback">Please provide the initial stock.</div>
+        </div>
+        <div class="col-md-6">
+            <label for="books" class="form-label">Books</label>
+            <textarea class="form-control" id="books" name="books" rows="3">${shelf.books}</textarea>
+            <div class="invalid-feedback">Please provide the books information.</div>
+        </div>
+    </div>
 
 <div class="mb-3">
 <a href="${pageContext.request.contextPath}/shelf/list" class="btn btn-secondary">

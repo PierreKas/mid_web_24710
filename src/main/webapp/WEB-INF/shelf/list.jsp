@@ -46,6 +46,7 @@ ${sessionScope.errorMessage}
 <th>Initial Stock</th>
 <th>Room ID</th>
 <th>Actions</th>
+<th>Books</th>
 </tr>
 </thead>
 <tbody>
@@ -57,6 +58,7 @@ ${sessionScope.errorMessage}
 <td>${shelf.borrowed_number}</td>
 <td>${shelf.initial_stock}</td>
 <td>${shelf.room_id}</td>
+<td>${shelf.books}</td>
 <td>
 <a href="${pageContext.request.contextPath}/shelf/edit?id=${shelf.id}" class="btn btn-sm btn-primary">
 <i class="bi bi-pencil"></i> Edit

@@ -1,11 +1,12 @@
 package util;
 
-import java.awt.print.Book;
-
 import java.util.Properties;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
+
+import model.Book;
+import model.Borrower;
 import model.Location;
 import model.Room;
 import model.Shelf;
@@ -43,8 +44,8 @@ public class HibernateUtil {
                 // Add annotated classes
                 conf.addAnnotatedClass(Location.class);
                 conf.addAnnotatedClass(User.class);
-                //conf.addAnnotatedClass(Book.class);
-                // conf.addAnnotatedClass(Borrower.class);
+                conf.addAnnotatedClass(Book.class);
+                conf.addAnnotatedClass(Borrower.class);
                 // conf.addAnnotatedClass(Membership.class);
                 // conf.addAnnotatedClass(membership_type.class);
                  conf.addAnnotatedClass(Shelf.class);
